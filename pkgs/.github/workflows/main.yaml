@@ -1,0 +1,29 @@
+name: Build packages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-go@v4
+    - uses: goto-bus-stop/setup-zig@v2
+      with:
+        version: 0.14.0
+
+    - name: Build packages
+      run: ./build_packages.sh
+        
+
+    - name: Upload packages
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "pkgs"
+        prerelease: true
+        title: "pkgs"
+        files: |
+          build/*
